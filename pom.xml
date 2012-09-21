@@ -8,7 +8,7 @@
 		<version>1.466</version>
   	</parent>
 	
-	<name>Hudson Redmine plugin</name>
+	<name>Jenkins Redmine plugin</name>
  	<artifactId>redmine</artifactId>
   	<packaging>hpi</packaging>
   	<version>0.11-SNAPSHOT</version>
