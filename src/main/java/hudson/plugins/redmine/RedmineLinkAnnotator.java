@@ -63,7 +63,8 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
                         int startpos = 0;
                         int endpos = message[0].length() + nums[0].length() + 1;
                         nums[0] = nums[0].replace("#", "");
-                        st.addMarkup(startpos, endpos, "<a href='" + url + "issues/show/" + nums[0] + "'>", "</a>");
+//                        st.addMarkup(startpos, endpos, "<a href='" + url + "issues/show/" + nums[0] + "'>", "</a>");
+                        st.addMarkup(startpos, endpos, "<a href='" + url + "issues/" + nums[0] + "'>", "</a>");
 
                         startpos = endpos + splitValue.length();
                         endpos = startpos;
@@ -78,7 +79,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
                             }
                             if (StringUtils.isNotBlank(nums[i])) {
                                 nums[i] = nums[i].replace("#", "");
-                                st.addMarkup(startpos, endpos, "<a href='" + url + "issues/show/" + nums[i].trim() + "'>", "</a>");
+                                st.addMarkup(startpos, endpos, "<a href='" + url + "issues/" + nums[i].trim() + "'>", "</a>");
                             }
                             startpos = endpos + splitValue.length();
 
@@ -100,7 +101,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
     static final LinkMarkup[] MARKUPS = new LinkMarkup[]{
         new LinkMarkup(
         "(?:#|refs |references |IssueID |fixes |closes )#?NUM",
-        "issues/show/$1"),
+        "issues/$1"),
         new LinkMarkup(
         "((?:[A-Z][a-z]+){2,})|wiki:ANYWORD",
         "wiki/$1$2"),};
