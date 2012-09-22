@@ -4,6 +4,7 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
 import hudson.plugins.redmine.browser.BrowserLinks;
+import hudson.scm.EditType;
 import hudson.scm.RepositoryBrowser;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
@@ -27,6 +28,9 @@ public class RedmineRepositoryBrowser extends SubversionRepositoryBrowser {
 
     @Override
     public URL getDiffLink(Path path) throws IOException {
+        if (path.getEditType() != EditType.EDIT) {
+            return null;
+        }        
         BrowserLinks links = BrowserLinks.createBrowserLinks(path.getLogEntry());
         return links.getDiffLink(path);
     }

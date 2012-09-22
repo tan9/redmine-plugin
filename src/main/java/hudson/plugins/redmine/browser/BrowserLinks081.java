@@ -1,6 +1,5 @@
 package hudson.plugins.redmine.browser;
 
-import hudson.scm.EditType;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
 import java.io.IOException;
@@ -18,14 +17,10 @@ public class BrowserLinks081 extends BrowserLinks {
 
     @Override
     public URL getDiffLink(Path path) throws IOException {
-        if (path.getEditType() != EditType.EDIT) {
-            return null;
-        }
-
         LogEntry entry = getLogEntry();
 
         URL baseUrl = getRedmineURL(entry);
-        String projectName = getProject(entry);
+        String projectName = getProjectName(entry);
         String filePath = path.getValue();
         int revision = entry.getRevision();
 
@@ -37,7 +32,7 @@ public class BrowserLinks081 extends BrowserLinks {
         LogEntry entry = getLogEntry();
 
         URL baseUrl = getRedmineURL(entry);
-        String projectName = getProject(entry);
+        String projectName = getProjectName(entry);
         String filePath = path.getValue();
 
         return baseUrl == null ? null : new URL(baseUrl, "repositories/entry/" + projectName + filePath);
@@ -48,7 +43,7 @@ public class BrowserLinks081 extends BrowserLinks {
         LogEntry entry = getLogEntry();
 
         URL baseUrl = getRedmineURL(entry);
-        String projectName = getProject(entry);
+        String projectName = getProjectName(entry);
 
         return baseUrl == null ? null : new URL(baseUrl, "repositories/revision/" + projectName + "/" + entry.getRevision());
     }

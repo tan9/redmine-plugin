@@ -33,6 +33,9 @@ public abstract class BrowserLinks {
     }
 
     public BrowserLinks(LogEntry entry) {
+        if (entry == null) {
+            throw new IllegalArgumentException("LogEntry should not be null.");
+        }
         this.logEntry = entry;
     }
 
@@ -55,17 +58,15 @@ public abstract class BrowserLinks {
         RedmineProjectProperty rpp = getRedmineProjectProperty(logEntry);
         if (rpp == null) {
             return null;
-        } else {
-            return new URL(rpp.redmineWebsite);
-        }
+        } 
+        return new URL(rpp.redmineWebsite);
     }
 
-    protected String getProject(LogEntry logEntry) {
+    protected String getProjectName(LogEntry logEntry) {
         RedmineProjectProperty rpp = getRedmineProjectProperty(logEntry);
         if (rpp == null) {
             return null;
-        } else {
-            return rpp.projectName;
-        }
+        } 
+        return rpp.projectName;
     }
 }
