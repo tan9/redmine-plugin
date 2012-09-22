@@ -37,7 +37,7 @@ public class BrowserLinks140 extends BrowserLinks {
         String filePath = path.getValue();
         int revision = path.getLogEntry().getRevision();
 
-        return baseUrl == null ? null : new URL(baseUrl, "projects/" + projectName + "/repository/revisions/" + revision + "/entry" + filePath);
+        return new URL(baseUrl, "projects/" + projectName + "/repository/revisions/" + revision + "/entry" + filePath);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class BrowserLinks140 extends BrowserLinks {
         URL baseUrl = getRedmineURL(entry);
         String projectName = getProjectName(entry);
         
-        return baseUrl == null ? null : new URL(baseUrl, "projects/" + projectName + "/repository/revisions/" + entry.getRevision());
+        return new URL(baseUrl, "projects/" + projectName + "/repository/revisions/" + entry.getRevision());
     }
 
 }
