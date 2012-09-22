@@ -1,5 +1,6 @@
 package hudson.plugins.redmine.browser;
 
+import hudson.plugins.redmine.RedmineProjectProperty;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
 import java.io.IOException;
@@ -11,8 +12,8 @@ import java.net.URL;
  */
 public class BrowserLinks140 extends BrowserLinks {
 
-    public BrowserLinks140(LogEntry entry) {
-        super(entry);
+    protected BrowserLinks140(LogEntry entry, RedmineProjectProperty property) {
+        super(entry, property);
     }
     
     @Override

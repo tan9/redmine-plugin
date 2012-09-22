@@ -14,9 +14,15 @@ import java.net.URL;
  */
 public abstract class BrowserLinks {
     
-    private LogEntry logEntry;
+    private final LogEntry logEntry;
+    
+    private final RedmineProjectProperty property;
     
     public static BrowserLinks createBrowserLinks(LogEntry entry) {
+        if (entry == null) {
+            throw new IllegalArgumentException("LogEntry should not be null.");
+        }
+        
         AbstractProject<?, ?> p = (AbstractProject<?, ?>) entry.getParent().build.getProject();
         RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
         if (rpp == null) {
@@ -25,22 +31,24 @@ public abstract class BrowserLinks {
         
         String ver = rpp.getVersion();
         if ("080".equals(ver)) {
-            return new BrowserLinks080(entry);
+            return new BrowserLinks080(entry, rpp);
         } else if ("081".equals(ver)) {
-            return new BrowserLinks081(entry);
+            return new BrowserLinks081(entry,rpp);
         }
-        return new BrowserLinks140(entry);
+        return new BrowserLinks140(entry, rpp);
     }
 
-    public BrowserLinks(LogEntry entry) {
-        if (entry == null) {
-            throw new IllegalArgumentException("LogEntry should not be null.");
-        }
+    protected BrowserLinks(LogEntry entry, RedmineProjectProperty property) {
         this.logEntry = entry;
+        this.property = property;
     }
 
     public LogEntry getLogEntry() {
         return logEntry;
+    }
+
+    public RedmineProjectProperty getProperty() {
+        return property;
     }
     
     public abstract URL getDiffLink(Path path) throws IOException;
@@ -49,24 +57,11 @@ public abstract class BrowserLinks {
 
     public abstract URL getChangeSetLink() throws IOException;
 
-    protected RedmineProjectProperty getRedmineProjectProperty(LogEntry logEntry) {
-        AbstractProject<?, ?> p = (AbstractProject<?, ?>) logEntry.getParent().build.getProject();
-        return p.getProperty(RedmineProjectProperty.class);
-    }
-
     protected URL getRedmineURL(LogEntry logEntry) throws MalformedURLException {
-        RedmineProjectProperty rpp = getRedmineProjectProperty(logEntry);
-        if (rpp == null) {
-            return null;
-        } 
-        return new URL(rpp.redmineWebsite);
+        return new URL(property.redmineWebsite);
     }
 
     protected String getProjectName(LogEntry logEntry) {
-        RedmineProjectProperty rpp = getRedmineProjectProperty(logEntry);
-        if (rpp == null) {
-            return null;
-        } 
-        return rpp.projectName;
+        return property.projectName;
     }
 }
