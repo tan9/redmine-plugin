@@ -7,7 +7,10 @@
     <f:textbox name="redmine.projectName" value="${instance.projectName}" />
   </f:entry>
   <f:entry title="${%Version}" field="version">
-        <f:select />
+    <f:select />
   </f:entry>  
+  <f:entry title="${%API key}" field="apiKey">
+    <f:textbox />  
+  </f:entry>
   
 </j:jelly>

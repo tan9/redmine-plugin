@@ -29,9 +29,11 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
     private Boolean redmineVersion;
     
     private final String version;
+    
+    private final String apiKey;
 
     @DataBoundConstructor
-    public RedmineProjectProperty(String redmineWebsite, String projectName, String version) {
+    public RedmineProjectProperty(String redmineWebsite, String projectName, String version, String apiKey) {
         if (StringUtils.isBlank(redmineWebsite)) {
             redmineWebsite = null;
         } else {
@@ -42,6 +44,7 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
         this.redmineWebsite = redmineWebsite;
         this.projectName = projectName;
         this.version = version;
+        this.apiKey = apiKey;
         
     }
 
@@ -49,6 +52,10 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
         return version;
     }
 
+    public String getApiKey() {
+        return apiKey;
+    }
+    
     @Override
     public Action getJobAction(AbstractProject<?, ?> job) {
         return new RedmineLinkAction(this);
@@ -86,8 +93,9 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
                 String redmineWebSite = req.getParameter("redmine.redmineWebsite");
                 String projectName = req.getParameter("redmine.projectName");
                 String version = Util.fixEmptyAndTrim(formData.getString("version"));
+                String apiKey = Util.fixEmptyAndTrim(formData.getString("apiKey"));
 
-                return new RedmineProjectProperty(redmineWebSite, projectName, version);
+                return new RedmineProjectProperty(redmineWebSite, projectName, version, apiKey);
 
             } catch (IllegalArgumentException e) {
                 throw new FormException("redmine.redmineWebsite", "redmine.redmineWebSite");
@@ -97,7 +105,8 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
         public ListBoxModel doFillVersionItems() {
             ListBoxModel model = new ListBoxModel();
             model.add("0.1.0 - 0.8.0", "080");
-            model.add("0.8.1 - 1.3.3", "081");
+            model.add("0.8.1 - 0.8.7", "081");
+            model.add("0.9.0 - 1.3.3", "090");
             model.add("1.4.0 -      ", "140");
             return model;
         }
