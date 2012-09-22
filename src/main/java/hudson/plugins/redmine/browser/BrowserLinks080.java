@@ -1,7 +1,5 @@
 package hudson.plugins.redmine.browser;
 
-import hudson.model.AbstractProject;
-import hudson.plugins.redmine.RedmineProjectProperty;
 import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
 import java.io.IOException;
@@ -51,9 +49,6 @@ public class BrowserLinks080 extends BrowserLinks {
     }
 
     private String getFilePath(LogEntry logEntry, String fileFullPath) {
-        AbstractProject<?, ?> p = (AbstractProject<?, ?>) logEntry.getParent().build.getProject();
-        RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
-
         String[] filePaths = fileFullPath.split("/");
         String filePath = "/";
         if (filePaths.length > 2) {
