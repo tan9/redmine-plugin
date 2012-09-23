@@ -23,6 +23,9 @@ public class RedmineLinkAction implements Action {
     }
 
     public String getUrlName() {
-        return prop.redmineWebsite;
+        if (prop.projectName == null) {
+            return prop.redmineWebsite;
+        }
+        return prop.redmineWebsite + "projects/" + prop.projectName;
     }
 }
