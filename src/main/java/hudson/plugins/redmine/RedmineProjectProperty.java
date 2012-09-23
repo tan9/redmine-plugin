@@ -90,8 +90,8 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
         @Override
         public JobProperty<?> newInstance(StaplerRequest req, JSONObject formData) throws FormException {
             try {
-                String redmineWebSite = req.getParameter("redmine.redmineWebsite");
-                String projectName = req.getParameter("redmine.projectName");
+                String redmineWebSite = Util.fixEmptyAndTrim(formData.getString("redmineWebsite"));
+                String projectName = Util.fixEmptyAndTrim(formData.getString("projectName"));
                 String version = Util.fixEmptyAndTrim(formData.getString("version"));
                 String apiKey = Util.fixEmptyAndTrim(formData.getString("apiKey"));
 
