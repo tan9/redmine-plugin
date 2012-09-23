@@ -16,8 +16,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author sogabe
+ * Automatic refresh of repositories in Redmine on building
+ * 
+ * @author Seiji Sogabe
  */
 @Extension
 public class RedmineRepositoryUpdateListener extends RunListener<Run> {
@@ -78,6 +79,9 @@ public class RedmineRepositoryUpdateListener extends RunListener<Run> {
 
     }
 
+    /**
+     * Check whether automatic refresh is supported. 
+     */
     private boolean isSupportedVersion(String version) {
         if ("090".equals(version) || "140".equals(version)) {
             return true;
