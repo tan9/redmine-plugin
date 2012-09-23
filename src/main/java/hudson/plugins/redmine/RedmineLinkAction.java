@@ -15,6 +15,9 @@ public class RedmineLinkAction implements Action {
     }
 
     public String getIconFileName() {
+        if (getUrlName() == null) {
+            return null;
+        }
         return "/plugin/redmine/redmine_fluid_icon.png"; 
     }
 
@@ -23,6 +26,9 @@ public class RedmineLinkAction implements Action {
     }
 
     public String getUrlName() {
+        if (prop.redmineWebsite == null) {
+            return null;
+        }
         if (prop.projectName == null) {
             return prop.redmineWebsite;
         }
