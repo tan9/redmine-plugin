@@ -83,7 +83,7 @@ public class RedmineRepositoryUpdateListener extends RunListener<Run> {
      * Check whether automatic refresh is supported. 
      */
     private boolean isSupportedVersion(String version) {
-        if ("090".equals(version) || "140".equals(version)) {
+        if ("090".equals(version) || "130".equals(version) || "140".equals(version)) {
             return true;
         }
         return false;

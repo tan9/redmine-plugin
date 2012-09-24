@@ -32,7 +32,7 @@ public abstract class BrowserLinks {
         String ver = rpp.getVersion();
         if ("080".equals(ver)) {
             return new BrowserLinks080(entry, rpp);
-        } else if ("081".equals(ver) || "090".equals(ver)) {
+        } else if ("081".equals(ver) || "090".equals(ver) || "130".equals(ver)) {
             return new BrowserLinks081(entry,rpp);
         }
         return new BrowserLinks140(entry, rpp);

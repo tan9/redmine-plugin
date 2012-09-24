@@ -106,7 +106,8 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
             ListBoxModel model = new ListBoxModel();
             model.add("0.1.0 - 0.8.0", "080");
             model.add("0.8.1 - 0.8.7", "081");
-            model.add("0.9.0 - 1.3.3", "090");
+            model.add("0.9.0 - 1.2.3", "090");
+            model.add("0.3.0 - 1.3.3", "130");
             model.add("1.4.0 -      ", "140");
             return model;
         }
