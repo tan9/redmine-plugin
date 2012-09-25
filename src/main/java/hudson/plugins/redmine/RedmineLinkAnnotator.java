@@ -22,7 +22,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
     @Override
     public void annotate(AbstractBuild<?, ?> build, Entry change, MarkupText text) {
         RedmineProjectProperty rpp = build.getProject().getProperty(RedmineProjectProperty.class);
-        if (rpp == null || rpp.redmineWebsite == null) { // not configured
+        if (rpp == null || rpp.redmineWebsite == null) { 
             return;
         }
 
@@ -39,7 +39,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
         private final String href;
 
         LinkMarkup(String pattern, String href) {
-            pattern = NUM_PATTERN.matcher(pattern).replaceAll("([\\\\d|,| |&amp;|#]*#?\\\\d)"); // \\\\d becomes \\d when in the expanded text.
+            pattern = NUM_PATTERN.matcher(pattern).replaceAll("([\\\\d|,| |&amp;|#]*#?\\\\d)"); 
             pattern = ANYWORD_PATTERN.matcher(pattern).replaceAll("((?:\\\\w|[._-])+)");
             this.pattern = Pattern.compile(pattern);
             this.href = href;
@@ -63,7 +63,6 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
                         int startpos = 0;
                         int endpos = message[0].length() + nums[0].length() + 1;
                         nums[0] = nums[0].replace("#", "");
-//                        st.addMarkup(startpos, endpos, "<a href='" + url + "issues/show/" + nums[0] + "'>", "</a>");
                         st.addMarkup(startpos, endpos, "<a href='" + url + "issues/" + nums[0] + "'>", "</a>");
 
                         startpos = endpos + splitValue.length();
@@ -104,5 +103,6 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
         "issues/$1"),
         new LinkMarkup(
         "((?:[A-Z][a-z]+){2,})|wiki:ANYWORD",
-        "wiki/$1$2"),};
+        "wiki/$1$2"),
+    };
 }
