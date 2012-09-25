@@ -22,7 +22,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
     @Override
     public void annotate(AbstractBuild<?, ?> build, Entry change, MarkupText text) {
         RedmineProjectProperty rpp = build.getProject().getProperty(RedmineProjectProperty.class);
-        if (rpp == null || rpp.redmineWebsite == null) { 
+        if (rpp == null || rpp.redmineWebsite == null) {
             return;
         }
 
@@ -39,7 +39,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
         private final String href;
 
         LinkMarkup(String pattern, String href) {
-            pattern = NUM_PATTERN.matcher(pattern).replaceAll("([\\\\d|,| |&amp;|#]*#?\\\\d)"); 
+            pattern = NUM_PATTERN.matcher(pattern).replaceAll("([\\\\d|,| |&amp;|#]*#?\\\\d)");
             pattern = ANYWORD_PATTERN.matcher(pattern).replaceAll("((?:\\\\w|[._-])+)");
             this.pattern = Pattern.compile(pattern);
             this.href = href;
@@ -48,46 +48,42 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
         void process(MarkupText text, String url) {
             for (SubText st : text.findTokens(pattern)) {
                 String[] message = st.getText().split(" ", 2);
-
-                if (message.length > 1) {
-                    String[] nums = message[1].split(",|&amp;| ");
-                    String splitValue = ",";
-                    if (message[1].indexOf("&amp;") != -1) {
-                        splitValue = "&amp;";
-                    } else if (message[1].indexOf("#") != -1) {
-                        splitValue = "#";
-                    } else if (message[1].indexOf(" ") != -1) {
-                        splitValue = " ";
-                    }
-                    if (nums.length > 1) {
-                        int startpos = 0;
-                        int endpos = message[0].length() + nums[0].length() + 1;
-                        nums[0] = nums[0].replace("#", "");
-                        st.addMarkup(startpos, endpos, "<a href='" + url + "issues/" + nums[0] + "'>", "</a>");
-
-                        startpos = endpos + splitValue.length();
-                        endpos = startpos;
-
-                        for (int i = 1; i < nums.length; i++) {
-                            endpos += nums[i].length();
-                            if (i != 1) {
-                                endpos += splitValue.length();
-                            }
-                            if (endpos >= st.getText().length()) {
-                                endpos = st.getText().length();
-                            }
-                            if (StringUtils.isNotBlank(nums[i])) {
-                                nums[i] = nums[i].replace("#", "");
-                                st.addMarkup(startpos, endpos, "<a href='" + url + "issues/" + nums[i].trim() + "'>", "</a>");
-                            }
-                            startpos = endpos + splitValue.length();
-
-                        }
-                    } else {
-                        st.surroundWith("<a href='" + url + href + "'>", "</a>");
-                    }
-                } else {
+                if (message.length <= 1) {
                     st.surroundWith("<a href='" + url + href + "'>", "</a>");
+                    continue;
+                }
+
+                String[] nums = message[1].split(",|&amp;| ");
+                if (nums.length <= 1) {
+                    st.surroundWith("<a href='" + url + href + "'>", "</a>");
+                    continue;
+                }
+
+                String splitValue = ",";
+                if (message[1].indexOf("&amp;") != -1) {
+                    splitValue = "&amp;";
+                } else if (message[1].indexOf("#") != -1) {
+                    splitValue = "#";
+                } else if (message[1].indexOf(" ") != -1) {
+                    splitValue = " ";
+                }
+
+                int startpos = 0;
+                int endpos = message[0].length() + 1;
+                for (int i = 0; i < nums.length; i++) {
+                    endpos += nums[i].length();
+                    if (i > 0) {
+                        endpos += splitValue.length();
+                    }
+                    if (endpos >= st.getText().length()) {
+                        endpos = st.getText().length();
+                    }
+                    if (StringUtils.isNotBlank(nums[i])) {
+                        nums[i] = nums[i].replace("#", "");
+                        st.addMarkup(startpos, endpos,
+                                "<a href='" + url + "issues/" + nums[i].trim() + "'>", "</a>");
+                    }
+                    startpos = endpos + splitValue.length();
                 }
             }
         }
@@ -103,6 +99,5 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
         "issues/$1"),
         new LinkMarkup(
         "((?:[A-Z][a-z]+){2,})|wiki:ANYWORD",
-        "wiki/$1$2"),
-    };
+        "wiki/$1$2"),};
 }
