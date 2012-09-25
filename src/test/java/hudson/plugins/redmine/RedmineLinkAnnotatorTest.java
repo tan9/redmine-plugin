@@ -61,6 +61,16 @@ public class RedmineLinkAnnotatorTest extends TestCase {
         assertAnnotatedTextEquals("IssueID #1 #11",
                 "<a href='" + REDMINE_URL + "issues/1'>IssueID #1</a> "
                 + "<a href='" + REDMINE_URL + "issues/11'>#11</a>");
+        assertAnnotatedTextEquals("#42 anything", "<a href='" + REDMINE_URL + "issues/42'>#42</a> anything");
+        assertAnnotatedTextEquals("IssueID 22 is fixed", "<a href='" + REDMINE_URL + "issues/22'>IssueID 22</a> is fixed");
+        assertAnnotatedTextEquals("fixes 10,11,12,#13 are fixed",
+                "<a href='" + REDMINE_URL + "issues/10'>fixes 10</a>,"
+                + "<a href='" + REDMINE_URL + "issues/11'>11</a>,"
+                + "<a href='" + REDMINE_URL + "issues/12'>12</a>,"        
+                + "<a href='" + REDMINE_URL + "issues/13'>#13</a> are fixed");        
+        assertAnnotatedTextEquals("fixes 10 refs 11",
+                "<a href='" + REDMINE_URL + "issues/10'>fixes 10</a> "
+                + "<a href='" + REDMINE_URL + "issues/11'>refs 11</a>");        
     }
 
     private void assertAnnotatedTextEquals(String originalText, String expectedAnnotatedText) {
