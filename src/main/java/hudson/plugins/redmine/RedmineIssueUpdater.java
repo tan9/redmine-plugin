@@ -36,12 +36,19 @@ public class RedmineIssueUpdater extends Recorder {
         
         // check version.Redmine Java API Library supports 1.3.0+ , 2.0.0+
         String version = rpp.getVersion();
-        if (!"130".equals(version) && !"140".equals(version)) {
-            logger.println("[Redmine] 1.2.3 or earlier not supported.");
+        if (!isJavaAPISupported(version)) {
+            logger.println("[Redmine] Java API not support this version.");
             return true;
         }
         
         return true;
+    }
+    
+    private boolean isJavaAPISupported(String version) {
+        if ("130".equals(version) || "140".equals(version)) {
+            return true;
+        }
+        return false;
     }
     
     @Extension
