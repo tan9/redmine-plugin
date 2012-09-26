@@ -59,14 +59,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
                     continue;
                 }
 
-                String splitValue = ",";
-                if (message[1].indexOf("&amp;") != -1) {
-                    splitValue = "&amp;";
-                } else if (message[1].indexOf("#") != -1) {
-                    splitValue = "#";
-                } else if (message[1].indexOf(" ") != -1) {
-                    splitValue = " ";
-                }
+                String splitValue = getSplitter(message[1]);
 
                 int startpos = 0;
                 int endpos = message[0].length() + 1;
@@ -75,17 +68,27 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
                     if (i > 0) {
                         endpos += splitValue.length();
                     }
-                    if (endpos >= st.getText().length()) {
-                        endpos = st.getText().length();
-                    }
+                    endpos = Math.min(endpos, st.getText().length());
                     if (StringUtils.isNotBlank(nums[i])) {
-                        nums[i] = nums[i].replace("#", "");
+                        nums[i] = nums[i].replace("#", "").trim();
                         st.addMarkup(startpos, endpos,
-                                "<a href='" + url + "issues/" + nums[i].trim() + "'>", "</a>");
+                                "<a href='" + url + "issues/" + nums[i] + "'>", "</a>");
                     }
                     startpos = endpos + splitValue.length();
                 }
             }
+        }
+        
+        private String getSplitter(String message) {
+            String splitValue = ",";
+            if (message.indexOf("&amp;") != -1) {
+                splitValue = "&amp;";
+            } else if (message.indexOf("#") != -1) {
+                splitValue = "#";
+            } else if (message.indexOf(" ") != -1) {
+                splitValue = " ";
+            }
+            return splitValue;
         }
 
         private static final Pattern NUM_PATTERN = Pattern.compile("NUM");
