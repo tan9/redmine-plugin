@@ -9,10 +9,7 @@ import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
 import hudson.util.ListBoxModel;
 import java.util.logging.Logger;
-import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 
 /**
  * Property for {@link AbstractProject} that stores the associated Redmine website URL.
@@ -34,18 +31,15 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
 
     @DataBoundConstructor
     public RedmineProjectProperty(String redmineWebsite, String projectName, String version, String apiKey) {
-        if (StringUtils.isBlank(redmineWebsite)) {
-            redmineWebsite = null;
+        String site  = Util.fixEmptyAndTrim(redmineWebsite);
+        if (site != null && !site.endsWith("/")) {
+            this.redmineWebsite = site + '/';
         } else {
-            if (!redmineWebsite.endsWith("/")) {
-                redmineWebsite += '/';
-            }
+            this.redmineWebsite = site;
         }
-        this.redmineWebsite = redmineWebsite;
-        this.projectName = projectName;
-        this.version = version;
-        this.apiKey = apiKey;
-        
+        this.projectName = Util.fixEmptyAndTrim(projectName);
+        this.version = Util.fixEmptyAndTrim(version);
+        this.apiKey = Util.fixEmptyAndTrim(apiKey);        
     }
 
     public String getVersion() {
@@ -87,21 +81,6 @@ public class RedmineProjectProperty extends JobProperty<AbstractProject<?, ?>> {
             return "Associated Redmine website";
         }
 
-        @Override
-        public JobProperty<?> newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-            try {
-                String redmineWebSite = Util.fixEmptyAndTrim(formData.getString("redmineWebsite"));
-                String projectName = Util.fixEmptyAndTrim(formData.getString("projectName"));
-                String version = Util.fixEmptyAndTrim(formData.getString("version"));
-                String apiKey = Util.fixEmptyAndTrim(formData.getString("apiKey"));
-
-                return new RedmineProjectProperty(redmineWebSite, projectName, version, apiKey);
-
-            } catch (IllegalArgumentException e) {
-                throw new FormException("redmine.redmineWebsite", "redmine.redmineWebSite");
-            }
-        }
-        
         public ListBoxModel doFillVersionItems() {
             ListBoxModel model = new ListBoxModel();
             model.add("0.1.0 - 0.8.0", "080");
