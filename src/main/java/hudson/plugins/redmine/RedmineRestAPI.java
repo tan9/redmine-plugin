@@ -91,9 +91,9 @@ public class RedmineRestAPI {
         String prjName = Utility.escape(build.getProject().getName());
         int buildNo = build.getNumber();
         String buildUrl = rootUrl + build.getUrl();
-        String result = Utility.escape(build.getResult().toString());
         String jenkinsImg = rootUrl + "plugin/redmine/jenkins.png";
-        return "!" + jenkinsImg + "! リビジョン r" + rev + " を \"" + prjName + " #" + buildNo + "\":" + buildUrl + " に統合しました。結果: " + result;
+        String statusImg = rootUrl + "images/24x24/" + build.getResult().color.getImage();
+        return "!" + jenkinsImg + "! リビジョン r" + rev + " を !" + statusImg + "! \"" + prjName + " #" + buildNo + "\":" + buildUrl + " に統合しました。";
     }
     
 }
