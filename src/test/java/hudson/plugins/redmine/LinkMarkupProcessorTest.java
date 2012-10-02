@@ -3,13 +3,12 @@ package hudson.plugins.redmine;
 import hudson.MarkupText;
 import junit.framework.TestCase;
 
-public class RedmineLinkAnnotatorTest extends TestCase {
+public class LinkMarkupProcessorTest extends TestCase {
 
     private static final String REDMINE_URL = "http://local.redmine/";
 
     public void testWikiLinkSyntax() {
         assertAnnotatedTextEquals("Nothing here.", "Nothing here.");
-        assertAnnotatedTextEquals("Text with WikiLink.", "Text with <a href='" + REDMINE_URL + "wiki/WikiLink'>WikiLink</a>.");
         assertAnnotatedTextEquals("#42", "<a href='" + REDMINE_URL + "issues/42'>#42</a>");
         assertAnnotatedTextEquals("IssueID 22", "<a href='" + REDMINE_URL + "issues/22'>IssueID 22</a>");
         assertAnnotatedTextEquals("fixes 10,11,12",
@@ -75,11 +74,12 @@ public class RedmineLinkAnnotatorTest extends TestCase {
 
     private void assertAnnotatedTextEquals(String originalText, String expectedAnnotatedText) {
         MarkupText markupText = new MarkupText(originalText);
-        for (RedmineLinkAnnotator.LinkMarkup markup : RedmineLinkAnnotator.MARKUPS) {
+        for (LinkMarkupProcessor markup : LinkMarkupProcessor.MARKUPS) {
             markup.process(markupText, REDMINE_URL);
         }
 
         System.out.println(markupText.toString());
         assertEquals(expectedAnnotatedText, markupText.toString());
     }
+    
 }

@@ -33,8 +33,8 @@ public class RedmineRepositoryUpdateListener extends RunListener<Run> {
             return;
         }
 
-        String site = Util.fixEmptyAndTrim(rpp.redmineWebsite);
-        String projectName = Util.fixEmptyAndTrim(rpp.projectName);
+        String site = Util.fixEmptyAndTrim(rpp.getRedmineWebsite());
+        String projectName = Util.fixEmptyAndTrim(rpp.getProjectName());
         String apiKey = Util.fixEmptyAndTrim(rpp.getApiKey());
         String version = Util.fixEmptyAndTrim(rpp.getVersion());
 

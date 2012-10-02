@@ -26,12 +26,12 @@ public class RedmineLinkAction implements Action {
     }
 
     public String getUrlName() {
-        if (prop.redmineWebsite == null) {
+        if (prop.getRedmineWebsite() == null) {
             return null;
         }
-        if (prop.projectName == null) {
-            return prop.redmineWebsite;
+        if (prop.getProjectName() == null) {
+            return prop.getRedmineWebsite();
         }
-        return prop.redmineWebsite + "projects/" + prop.projectName;
+        return prop.getRedmineWebsite() + "projects/" + prop.getProjectName();
     }
 }

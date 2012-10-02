@@ -12,5 +12,9 @@
            description="${%To setup automatic refresh of repositories in Redmine.}">
     <f:textbox />  
   </f:entry>
+  <f:entry title="${%Redmine API access key}" field="accessKey"
+           description="${%You can find your API key on your account page.}">
+    <f:textbox />  
+  </f:entry>
   
 </j:jelly>

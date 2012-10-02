@@ -58,7 +58,7 @@ public class RedmineRepositoryBrowser extends SubversionRepositoryBrowser {
         if (rpp == null) {
             return null;
         } else {
-            return new URL(rpp.redmineWebsite);
+            return new URL(rpp.getRedmineWebsite());
         }
     }
 
@@ -68,7 +68,7 @@ public class RedmineRepositoryBrowser extends SubversionRepositoryBrowser {
         if (rpp == null) {
             return null;
         } else {
-            return rpp.projectName;
+            return rpp.getProjectName();
         }
     }
 

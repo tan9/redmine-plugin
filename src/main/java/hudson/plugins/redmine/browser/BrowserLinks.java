@@ -58,10 +58,10 @@ public abstract class BrowserLinks {
     public abstract URL getChangeSetLink() throws IOException;
 
     protected URL getRedmineURL(LogEntry logEntry) throws MalformedURLException {
-        return new URL(property.redmineWebsite);
+        return new URL(property.getRedmineWebsite());
     }
 
     protected String getProjectName(LogEntry logEntry) {
-        return property.projectName;
+        return property.getProjectName();
     }
 }
