@@ -8,13 +8,14 @@
   <f:entry title="${%Redmine version}" field="version">
     <f:select />
   </f:entry>  
-  <f:entry title="${%Redmine repository API key}" field="apiKey"
-           description="${%To setup automatic refresh of repositories in Redmine.}">
-    <f:textbox />  
-  </f:entry>
-  <f:entry title="${%Redmine API access key}" field="accessKey"
-           description="${%You can find your API key on your account page.}">
-    <f:textbox />  
-  </f:entry>
-  
+  <f:advanced>
+    <f:entry title="${%Redmine repository API key}" field="apiKey"
+             description="${%To setup automatic refresh of repositories in Redmine.}">
+      <f:textbox />  
+    </f:entry>
+    <f:entry title="${%Redmine API access key}" field="accessKey"
+             description="${%You can find your API key on your account page.}">
+      <f:textbox />  
+    </f:entry>
+  </f:advanced>
 </j:jelly>
