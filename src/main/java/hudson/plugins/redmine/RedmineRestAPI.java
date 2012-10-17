@@ -52,20 +52,6 @@ public class RedmineRestAPI {
         }
     }
 
-    public String getSubject(String idstr) {
-        int id;
-        String subject = null;
-        try {
-            id = Integer.parseInt(idstr);
-            subject = getSubject(id);
-        } catch (NumberFormatException e) {
-            //
-        } catch (RedminePluginException e) {
-            //
-        }
-        return subject;
-    }
-    
     public String getSubject(int id) throws RedminePluginException {
         ensureJavaAPISupported();
         Issue issue;
