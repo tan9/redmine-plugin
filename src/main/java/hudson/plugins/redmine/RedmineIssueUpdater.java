@@ -3,6 +3,7 @@ package hudson.plugins.redmine;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.MarkupText;
+import hudson.MarkupText.SubText;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
@@ -13,12 +14,11 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -49,69 +49,49 @@ public class RedmineIssueUpdater extends Recorder {
             return true;
         }
 
+        Pattern pattern = rpp.getPattern();
         for (Entry entry : build.getChangeSet()) {
             String text = entry.getMsg();
             String rev = entry.getCommitId();
-            for (RedmineIssue issue : getIssues(rpp, new MarkupText(text))) {
-                int id = issue.getId();
-                try {
-                    api.updateNotes(id, rev, build);
-                } catch (RedminePluginException e) {
-                    logger.println("[Redmine] failed to update issue #" + id);
-                    logger.println(e);
-                }
-            }
+
+            UpdateNotesListener uListener = new UpdateNotesListener(rpp, rev, build);
+            IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, uListener);
+            processor.process(new MarkupText(text));
         }
 
         return true;
     }
 
-    private List<RedmineIssue> getIssues(RedmineProjectProperty rpp, MarkupText text) {
-        List<RedmineIssue> issues = new ArrayList<RedmineIssue>();
-        Pattern pattern = rpp.getPattern();
-        for (MarkupText.SubText st : text.findTokens(pattern)) {
-            String[] message = st.getText().split(" ", 2);
-            if (message.length <= 1) {
-                issues.add(new RedmineIssue(Integer.parseInt(st.group(1))));
-                continue;
-            }
+    private static class UpdateNotesListener implements IssueMarkupProcessor.IssueIdListener {
 
-            String[] nums = message[1].split(",|&amp;| ");
-            if (nums.length <= 1) {
-                issues.add(new RedmineIssue(Integer.parseInt(st.group(1))));
-                continue;
-            }
+        private RedmineProjectProperty rpp;
 
-            String splitValue = getSplitter(message[1]);
+        private String rev;
 
-            int startpos = 0;
-            int endpos = message[0].length() + 1;
-            for (int i = 0; i < nums.length; i++) {
-                endpos += nums[i].length();
-                if (i > 0) {
-                    endpos += splitValue.length();
-                }
-                endpos = Math.min(endpos, st.getText().length());
-                if (StringUtils.isNotBlank(nums[i])) {
-                    nums[i] = nums[i].replace("#", "").trim();
-                    issues.add(new RedmineIssue(Integer.parseInt(nums[i])));
-                }
-                startpos = endpos + splitValue.length();
+        private AbstractBuild<?, ?> build;
+
+        public UpdateNotesListener(RedmineProjectProperty rpp, String rev, AbstractBuild<?, ?> build) {
+            this.rpp = rpp;
+            this.rev = rev;
+            this.build = build;
+        }
+
+        public void onFirstIssueIdDetected(SubText text, int id) {
+            updateNotes(id, rev, build);
+        }
+
+        public void onRestIssueIdDetected(SubText text, int start, int end, int id) {
+            updateNotes(id, rev, build);
+        }
+
+        private void updateNotes(int id, String rev, AbstractBuild<?, ?> build) {
+            RedmineRestAPI api = rpp.getRedmineRestAPI();
+            try {
+                api.updateNotes(id, rev, build);
+            } catch (RedminePluginException ex) {
+                Logger.getLogger(RedmineIssueUpdater.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return issues;
-    }
-
-    private String getSplitter(String message) {
-        String splitValue = ",";
-        if (message.indexOf("&amp;") != -1) {
-            splitValue = "&amp;";
-        } else if (message.indexOf("#") != -1) {
-            splitValue = "#";
-        } else if (message.indexOf(" ") != -1) {
-            splitValue = " ";
-        }
-        return splitValue;
     }
 
     @Extension
