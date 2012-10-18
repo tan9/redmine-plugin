@@ -3,6 +3,7 @@ package hudson.plugins.redmine;
 import hudson.Extension;
 import hudson.MarkupText;
 import hudson.MarkupText.SubText;
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.scm.ChangeLogAnnotator;
 import hudson.scm.ChangeLogSet.Entry;
@@ -72,7 +73,7 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
             }
             String subject = null;
             try {
-                subject = Utility.escape(api.getSubject(id));
+                subject = Util.escape(api.getSubject(id));
             } catch (RedminePluginException e) {
                 //
             }

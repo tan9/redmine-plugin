@@ -3,6 +3,7 @@ package hudson.plugins.redmine;
 import com.taskadapter.redmineapi.RedmineException;
 import com.taskadapter.redmineapi.RedmineManager;
 import com.taskadapter.redmineapi.bean.Issue;
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import jenkins.model.Jenkins;
 
@@ -74,7 +75,7 @@ public class RedmineRestAPI {
     
     private String createNotes(String rev, AbstractBuild<?, ?> build) {
         String rootUrl = Jenkins.getInstance().getRootUrl();
-        String prjName = Utility.escape(build.getProject().getName());
+        String prjName = Util.escape(build.getProject().getName());
         int buildNo = build.getNumber();
         String buildUrl = rootUrl + build.getUrl();
         String jenkinsImg = rootUrl + "plugin/redmine/jenkins.png";
