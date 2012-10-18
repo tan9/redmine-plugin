@@ -14,8 +14,6 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
@@ -54,7 +52,7 @@ public class RedmineIssueUpdater extends Recorder {
             String text = entry.getMsg();
             String rev = entry.getCommitId();
 
-            UpdateNotesListener uListener = new UpdateNotesListener(rpp, rev, build);
+            UpdateNotesListener uListener = new UpdateNotesListener(rpp.getRedmineRestAPI(), build, rev);
             IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, uListener);
             processor.process(new MarkupText(text));
         }
@@ -64,14 +62,14 @@ public class RedmineIssueUpdater extends Recorder {
 
     private static class UpdateNotesListener implements IssueMarkupProcessor.IssueIdListener {
 
-        private RedmineProjectProperty rpp;
-
+        private RedmineRestAPI api;
+                
         private String rev;
 
         private AbstractBuild<?, ?> build;
 
-        public UpdateNotesListener(RedmineProjectProperty rpp, String rev, AbstractBuild<?, ?> build) {
-            this.rpp = rpp;
+        public UpdateNotesListener(RedmineRestAPI api, AbstractBuild<?, ?> build, String rev) {
+            this.api = api;
             this.rev = rev;
             this.build = build;
         }
@@ -85,11 +83,10 @@ public class RedmineIssueUpdater extends Recorder {
         }
 
         private void updateNotes(int id, String rev, AbstractBuild<?, ?> build) {
-            RedmineRestAPI api = rpp.getRedmineRestAPI();
             try {
                 api.updateNotes(id, rev, build);
             } catch (RedminePluginException ex) {
-                Logger.getLogger(RedmineIssueUpdater.class.getName()).log(Level.SEVERE, null, ex);
+                //
             }
         }
     }

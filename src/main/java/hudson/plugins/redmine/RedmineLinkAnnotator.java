@@ -30,23 +30,20 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
 
     private void annotate(RedmineProjectProperty rpp, MarkupText text) {
         Pattern pattern = rpp.getPattern();
-        IssueIdAnnotateListener listener = new IssueIdAnnotateListener(rpp);
+        IssueIdAnnotateListener listener = new IssueIdAnnotateListener(rpp.getRedmineRestAPI(), rpp.getRedmineWebsite());
         IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, listener);
         processor.process(text);
     }
 
     private static class IssueIdAnnotateListener implements IssueMarkupProcessor.IssueIdListener {
 
-        private RedmineProjectProperty rpp;
-
         private RedmineRestAPI api;
 
         private String url;
 
-        public IssueIdAnnotateListener(RedmineProjectProperty rpp) {
-            this.rpp = rpp;
-            this.api = rpp.getRedmineRestAPI();
-            this.url = rpp.getRedmineWebsite();
+        public IssueIdAnnotateListener(RedmineRestAPI api, String url) {
+            this.api = api;
+            this.url = url;
         }
 
         public void onFirstIssueIdDetected(SubText text, int id) {

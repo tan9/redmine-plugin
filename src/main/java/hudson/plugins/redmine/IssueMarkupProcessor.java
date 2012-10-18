@@ -19,14 +19,12 @@ public class IssueMarkupProcessor {
         for (MarkupText.SubText st : text.findTokens(pattern)) {
             String[] message = st.getText().split(" ", 2);
             if (message.length <= 1) {
-                // TODO
                 listener.onFirstIssueIdDetected(st, Integer.parseInt(st.group(1)));
                 continue;
             }
 
             String[] nums = message[1].split(",|&amp;| ");
             if (nums.length <= 1) {
-                // TODO
                 listener.onFirstIssueIdDetected(st, Integer.parseInt(st.group(1)));
                 continue;
             }
@@ -43,12 +41,18 @@ public class IssueMarkupProcessor {
                 endpos = Math.min(endpos, st.getText().length());
                 if (StringUtils.isNotBlank(nums[i])) {
                     nums[i] = nums[i].replace("#", "").trim();
-                    // TODO
                     listener.onRestIssueIdDetected(st, startpos, endpos, Integer.parseInt(nums[i]));
                 }
                 startpos = endpos + splitValue.length();
             }
         }
+    }
+
+    public static interface IssueIdListener {
+
+        void onFirstIssueIdDetected(MarkupText.SubText text, int id);
+
+        void onRestIssueIdDetected(MarkupText.SubText text, int start, int end, int id);
     }
 
     private String getSplitter(String message) {
@@ -63,10 +67,4 @@ public class IssueMarkupProcessor {
         return splitValue;
     }
 
-    public static interface IssueIdListener {
-
-        void onFirstIssueIdDetected(MarkupText.SubText text, int id);
-
-        void onRestIssueIdDetected(MarkupText.SubText text, int start, int end, int id);
-    }
 }
