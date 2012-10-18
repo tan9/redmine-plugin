@@ -1,7 +1,6 @@
 package hudson.plugins.redmine;
 
 import hudson.Extension;
-import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
 import hudson.plugins.redmine.browser.BrowserLinks;
 import hudson.scm.EditType;
@@ -10,7 +9,6 @@ import hudson.scm.SubversionChangeLogSet.LogEntry;
 import hudson.scm.SubversionChangeLogSet.Path;
 import hudson.scm.SubversionRepositoryBrowser;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -50,24 +48,6 @@ public class RedmineRepositoryBrowser extends SubversionRepositoryBrowser {
     @Override
     public Descriptor<RepositoryBrowser<?>> getDescriptor() {
         return DESCRIPTOR;
-    }
-
-    private URL getRedmineURL(LogEntry logEntry) throws MalformedURLException {
-        AbstractProject<?, ?> p = (AbstractProject<?, ?>) logEntry.getParent().build.getProject();
-        RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
-        if (rpp == null) {
-            return null;
-        }
-        return new URL(rpp.getRedmineWebsite());
-    }
-
-    private String getProject(LogEntry logEntry) {
-        AbstractProject<?, ?> p = (AbstractProject<?, ?>) logEntry.getParent().build.getProject();
-        RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
-        if (rpp == null) {
-            return null;
-        }
-        return rpp.getProjectName();
     }
 
     @Extension
