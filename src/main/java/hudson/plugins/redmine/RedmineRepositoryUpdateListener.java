@@ -2,7 +2,6 @@ package hudson.plugins.redmine;
 
 import hudson.Extension;
 import hudson.ProxyConfiguration;
-import hudson.Util;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -10,14 +9,13 @@ import hudson.model.listeners.RunListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Automatic refresh of repositories in Redmine on building
- * 
+ *
  * @author Seiji Sogabe
  */
 @Extension
@@ -29,22 +27,26 @@ public class RedmineRepositoryUpdateListener extends RunListener<Run> {
         Job<?, ?> job = r.getParent();
         RedmineProjectProperty rpp = job.getProperty(RedmineProjectProperty.class);
         if (rpp == null) {
-            LOGGER.info("[Redmine] failed to get project property.");
             return;
         }
 
-        String site = Util.fixEmptyAndTrim(rpp.getRedmineWebsite());
-        String projectName = Util.fixEmptyAndTrim(rpp.getProjectName());
-        String apiKey = Util.fixEmptyAndTrim(rpp.getApiKey());
-        String version = Util.fixEmptyAndTrim(rpp.getVersion());
+        String site = rpp.getRedmineWebsite();
+        String projectName = rpp.getProjectName();
+        String apiKey = rpp.getApiKey();
+        String version = rpp.getVersion();
 
+        // required parameters
         if (site == null || projectName == null || apiKey == null) {
             return;
         }
         if (!isSupportedVersion(version)) {
             return;
         }
-        
+
+        fetchRedmineChangeSet(site, projectName, apiKey);
+    }
+
+    private void fetchRedmineChangeSet(String site, String projectName, String apiKey) {
         HttpURLConnection conn = null;
         InputStream is = null;
         try {
@@ -54,33 +56,30 @@ public class RedmineRepositoryUpdateListener extends RunListener<Run> {
             conn.connect();
             int code = conn.getResponseCode();
             if (code != 200) {
-                LOGGER.log(Level.WARNING, "[Redmine] failed to connect {0} : response code {1}", 
+                LOGGER.log(Level.WARNING, "[Redmine] failed to connect {0} : response code {1}",
                         new String[]{site, String.valueOf(code)});
                 return;
             }
             is = conn.getInputStream();
-        } catch (MalformedURLException e) {
-            LOGGER.log(Level.WARNING, "[Redmine] Invalid url. {0} : {1}", new String[]{site, e.getMessage()});
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "[Redmine] failed to connect {0} : {1}", new String[]{site, e.getMessage()});
+            LOGGER.log(Level.WARNING, "[Redmine] failed to fetch changeset. due to {0}", e.getMessage());
         } finally {
-            if (is != null) {
-                try {
+            try {
+                if (is != null) {
                     is.close();
-                } catch (IOException e) {
-                    //
-                } finally {
-                    if (conn != null) {
-                        conn.disconnect();
-                    }
+                }
+            } catch (IOException e) {
+                // 
+            } finally {
+                if (conn != null) {
+                    conn.disconnect();
                 }
             }
         }
-
     }
 
     /**
-     * Check whether automatic refresh is supported. 
+     * Check whether automatic refresh is supported.
      */
     private boolean isSupportedVersion(String version) {
         if ("090".equals(version) || "130".equals(version) || "140".equals(version)) {
@@ -88,6 +87,6 @@ public class RedmineRepositoryUpdateListener extends RunListener<Run> {
         }
         return false;
     }
-    
+
     private static final Logger LOGGER = Logger.getLogger(RedmineRepositoryUpdateListener.class.getName());
 }

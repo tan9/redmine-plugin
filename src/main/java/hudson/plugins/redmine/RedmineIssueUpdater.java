@@ -15,7 +15,6 @@ import hudson.tasks.Recorder;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.regex.Pattern;
-import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -35,8 +34,6 @@ public class RedmineIssueUpdater extends Recorder {
             throws InterruptedException, IOException {
         PrintStream logger = listener.getLogger();
         logger.println("[Redmine] Updaing Redmine...");
-
-        String rootUrl = Jenkins.getInstance().getRootUrl();
 
         AbstractProject<?, ?> p = (AbstractProject<?, ?>) build.getProject();
         RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
@@ -59,7 +56,7 @@ public class RedmineIssueUpdater extends Recorder {
 
         return true;
     }
-
+    
     private static class UpdateNotesListener implements IssueMarkupProcessor.IssueIdListener {
 
         private RedmineRestAPI api;

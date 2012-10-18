@@ -16,7 +16,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * produces redmine links.
- * 
+ *
  * @author gaooh
  * @date 2008/10/26
  */
@@ -30,7 +30,7 @@ public class RedmineRepositoryBrowser extends SubversionRepositoryBrowser {
     public URL getDiffLink(Path path) throws IOException {
         if (path.getEditType() != EditType.EDIT) {
             return null;
-        }        
+        }
         BrowserLinks links = BrowserLinks.createBrowserLinks(path.getLogEntry());
         return links.getDiffLink(path);
     }
@@ -57,9 +57,8 @@ public class RedmineRepositoryBrowser extends SubversionRepositoryBrowser {
         RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
         if (rpp == null) {
             return null;
-        } else {
-            return new URL(rpp.getRedmineWebsite());
         }
+        return new URL(rpp.getRedmineWebsite());
     }
 
     private String getProject(LogEntry logEntry) {
@@ -67,9 +66,8 @@ public class RedmineRepositoryBrowser extends SubversionRepositoryBrowser {
         RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
         if (rpp == null) {
             return null;
-        } else {
-            return rpp.getProjectName();
         }
+        return rpp.getProjectName();
     }
 
     @Extension
