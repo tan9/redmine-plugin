@@ -21,19 +21,17 @@ public class RedmineRestAPI {
         
         String url = rpp.getRedmineWebsite();
         String accessKey = rpp.getAccessKey();
-        if (url != null && url.endsWith("/")) {
+        if (url == null || accessKey == null) {
+            throw new IllegalArgumentException("url and accessKey should be not null.");
+        }
+
+        if (url.endsWith("/")) {
             url = url.substring(0, url.length() - 1);
         }
         this.mgr = new RedmineManager(url, accessKey);
     }
 
     public boolean isJavaAPISupported() {
-        String url = rpp.getRedmineWebsite();
-        String accessKey = rpp.getAccessKey();
-        if (url == null || accessKey == null) {
-            return false;
-        }
-        
         String version = rpp.getVersion();
         if ("130".equals(version) || "140".equals(version)) {
             return true;

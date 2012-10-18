@@ -49,7 +49,7 @@ public class RedmineIssueUpdater extends Recorder {
             String text = entry.getMsg();
             String rev = entry.getCommitId();
 
-            UpdateNotesListener uListener = new UpdateNotesListener(rpp.getRedmineRestAPI(), build, rev);
+            UpdateNotesListener uListener = new UpdateNotesListener(api, build, rev);
             IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, uListener);
             processor.process(new MarkupText(text));
         }

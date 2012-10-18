@@ -6,10 +6,12 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.model.listeners.RunListener;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,17 +67,29 @@ public class RedmineRepositoryUpdateListener extends RunListener<Run> {
             LOGGER.log(Level.WARNING, "[Redmine] failed to fetch changeset. due to {0}", e.getMessage());
         } finally {
             try {
-                if (is != null) {
-                    is.close();
-                }
-            } catch (IOException e) {
-                // 
+                closeCloseableQuietly(is);
             } finally {
-                if (conn != null) {
-                    conn.disconnect();
-                }
+                disconect(conn);
             }
         }
+    }
+
+    private void closeCloseableQuietly(Closeable obj) {
+        if (obj == null) {
+            return;
+        }
+        try {
+            obj.close();
+        } catch (IOException e) {
+            // 
+        }
+    }
+    
+    private void disconect(HttpURLConnection conn) {
+        if (conn == null) {
+            return;
+        }
+        conn.disconnect();
     }
 
     /**
