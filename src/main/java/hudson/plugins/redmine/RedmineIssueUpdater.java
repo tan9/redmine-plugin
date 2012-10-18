@@ -38,29 +38,32 @@ public class RedmineIssueUpdater extends Recorder {
         AbstractProject<?, ?> p = (AbstractProject<?, ?>) build.getProject();
         RedmineProjectProperty rpp = p.getProperty(RedmineProjectProperty.class);
 
-        RedmineRestAPI api = rpp.getRedmineRestAPI();
-        if (!api.isJavaAPISupported()) {
-            logger.println("[Redmine] Java API not supported.");
-            return true;
-        }
-
-        Pattern pattern = rpp.getPattern();
-        for (Entry entry : build.getChangeSet()) {
-            String text = entry.getMsg();
-            String rev = entry.getCommitId();
-
-            UpdateNotesListener uListener = new UpdateNotesListener(api, build, rev);
-            IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, uListener);
-            processor.process(new MarkupText(text));
-        }
+        updateIssues(rpp, build);
 
         return true;
     }
-    
+
+    private void updateIssues(RedmineProjectProperty rpp, AbstractBuild<?, ?> build) {
+        RedmineRestAPI api = rpp.getRedmineRestAPI();
+        if (!api.isJavaAPISupported()) {
+            return;
+        }
+
+        Pattern pattern = rpp.getPattern();
+
+        for (Entry entry : build.getChangeSet()) {
+            String text = entry.getMsg();
+            String rev = entry.getCommitId();
+            UpdateNotesListener listener = new UpdateNotesListener(api, build, rev);
+            IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, listener);
+            processor.process(new MarkupText(text));
+        }
+    }
+
     private static class UpdateNotesListener implements IssueMarkupProcessor.IssueIdListener {
 
         private RedmineRestAPI api;
-                
+
         private String rev;
 
         private AbstractBuild<?, ?> build;
