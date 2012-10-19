@@ -32,8 +32,8 @@ public class RedmineLinkAnnotator extends ChangeLogAnnotator {
     private void annotate(RedmineProjectProperty rpp, MarkupText text) {
         Pattern pattern = rpp.getPattern();
         IssueIdAnnotateListener listener = new IssueIdAnnotateListener(rpp.getRedmineRestAPI(), rpp.getRedmineWebsite());
-        IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, listener);
-        processor.process(text);
+        IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern);
+        processor.process(text, listener);
     }
 
     private static class IssueIdAnnotateListener implements IssueMarkupProcessor.IssueIdListener {

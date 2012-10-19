@@ -55,8 +55,8 @@ public class RedmineIssueUpdater extends Recorder {
             String text = entry.getMsg();
             String rev = entry.getCommitId();
             UpdateNotesListener listener = new UpdateNotesListener(api, build, rev);
-            IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern, listener);
-            processor.process(new MarkupText(text));
+            IssueMarkupProcessor processor = new IssueMarkupProcessor(pattern);
+            processor.process(new MarkupText(text), listener);
         }
     }
 

@@ -8,14 +8,11 @@ public class IssueMarkupProcessor {
 
     private Pattern pattern;
     
-    private IssueIdListener listener;
-
-    public IssueMarkupProcessor(Pattern pattern, IssueIdListener listener) {
+    public IssueMarkupProcessor(Pattern pattern) {
         this.pattern = pattern;
-        this.listener = listener;
     }
 
-    public void process(MarkupText text) {
+    public void process(MarkupText text,IssueIdListener listener) {
         for (MarkupText.SubText st : text.findTokens(pattern)) {
             String[] message = st.getText().split(" ", 2);
             if (message.length <= 1) {
